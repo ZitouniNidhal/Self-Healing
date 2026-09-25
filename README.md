@@ -8,8 +8,52 @@
 
 > **A production-grade, closed-loop MLOps architecture designed to eliminate silent model degradation, resolve training-serving skew, and secure the ML supply chain against tampering.**
 
-![Architecture Diagram](docs/architecture_diagram.png)
-*(👆 Replace with your Excalidraw/Diagrams.net export)*
+### 🏗️ System Architecture
+
+```mermaid
+graph LR
+    subgraph Data & Features
+        Kafka[Apache Kafka]
+        FeastOffline[(S3 / Parquet)]
+        FeastOnline[(Redis)]
+        Feast[Feast Feature Store]
+    end
+
+    subgraph CI/CD & Training
+        GH[GitHub Actions]
+        Kubeflow[Kubeflow Pipelines]
+        MLflow[MLflow Registry]
+        Cosign[🔒 Sigstore/Cosign]
+    end
+
+    subgraph GitOps & Serving
+        GitRepo[📂 GitOps Manifests]
+        ArgoCD[ArgoCD]
+        K8s[Kubernetes Cluster]
+        KServe[KServe / Inference]
+    end
+
+    subgraph Observability & Self-Healing
+        Otel[OpenTelemetry]
+        Grafana[Grafana]
+        Evidently[Evidently AI]
+    end
+
+    User((User)) -->|Request| KServe
+    KServe -->|Fetch Features| FeastOnline
+    KServe -->|Log Prediction| Kafka
+    Kafka --> Evidently
+    Evidently -->|Drift Detected| GH
+    GH --> Kubeflow
+    Kubeflow -->|Point-in-Time Join| FeastOffline
+    Kubeflow -->|Log Model| MLflow
+    MLflow -->|Sign Artifact| Cosign
+    Cosign -->|Update URI| GitRepo
+    GitRepo -->|Sync| ArgoCD
+    ArgoCD -->|Deploy| K8s
+    K8s --> KServe
+    KServe -->|Metrics| Otel
+    Otel --> Grafana
 
 ---
 
