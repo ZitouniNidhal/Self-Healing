@@ -1,5 +1,4 @@
-# 🚀 Autonomous "Self-Healing" MLOps Platform
-### *with GitOps, Feature Store, and Supply Chain Security*
+# 🚀 Automated Machine Learning Lifecycle Platform with GitOps and Cryptographic Model Verification
 
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
 [![Kubernetes](https://img.shields.io/badge/Kubernetes-1.28+-326CE5?logo=kubernetes)](https://kubernetes.io/)
