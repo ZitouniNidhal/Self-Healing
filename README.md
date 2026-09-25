@@ -55,6 +55,7 @@ graph LR
     KServe -->|Metrics| Otel
     Otel --> Grafana
 
+```
 ---
 
 ## 📖 Overview
